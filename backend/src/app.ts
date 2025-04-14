@@ -3,12 +3,14 @@ import dotenv from 'dotenv'
 import connect from './config/db';
 import cors from 'cors'
 import userRoute from './routes/userRoutes'
+import adminRoute from './routes/adminRoute';
  
 dotenv.config()
 const app: Application = express();
 app.use(express.json())
 app.use(cors())
 app.use('/',userRoute)
+app.use('/admin',adminRoute)
 const port = process.env.PORT 
 const startServer = async ():Promise<void> => {
     try {
