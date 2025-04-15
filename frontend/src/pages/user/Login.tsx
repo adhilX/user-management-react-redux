@@ -2,13 +2,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
+import { setToken, setUser } from "../../store/authSlice";
+import { useDispatch } from "react-redux";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate  = useNavigate()
-
+  const dispatch = useDispatch()
   const formValidation =():boolean=>{
     const validationErrors: { email?: string; password?: string } = {};
 
@@ -33,11 +36,13 @@ function Login() {
     if (!formValidation()) return;
 
     try {
-      const response = await axios.post('http://localhost:3000/login', { email, password });
+      const response = await axiosInstance.post("/login", { email, password });
       console.log("Form submitted:", response.data);
       toast.success('User logged in successfully');
+      dispatch(setToken(response.data.token));
+      dispatch(setUser(response.data.user))
       navigate ('/', { replace: true });
-    } catch (error: any) {
+    } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.warning(error.response?.data?.message ||error.message)
         console.error('Axios error:', error.response?.data || error.message);

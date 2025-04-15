@@ -8,6 +8,7 @@
     "rootDir": "./src",
     "types": ["node"],
     "strict":true,
-    "forceConsistentCasingInFileNames":true
+    "forceConsistentCasingInFileNames":true,
+    "typeRoots": ["./node_modules/@types", "./types"]
   }
 }
