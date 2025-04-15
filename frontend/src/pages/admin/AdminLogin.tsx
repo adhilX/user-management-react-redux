@@ -1,33 +1,56 @@
 import { useState } from "react";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-toastify";
+import { setToken, setUser } from "../../store/authSlice";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 function AdminLogin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const validationErrors: { email?: string; password?: string } = {};
-
-        if (!email) {
-            validationErrors.email = "Email is required.";
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            validationErrors.email = "Please enter a valid email address.";
-        }
-
-        if (!password) {
-            validationErrors.password = "Password is required.";
-        } else if (password.length < 6) {
-            validationErrors.password = "Password must be at least 6 characters.";
-        }
-
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
+    const navigate  = useNavigate()
+    const dispatch = useDispatch()
+    const formValidation =():boolean=>{
+      const validationErrors: { email?: string; password?: string } = {};
+  
+      if (!email) {
+        validationErrors.email = "Email is required.";
+      } else if (!/\S+@\S+\.\S+/.test(email)) {
+        validationErrors.email = "Email is invalid.";
+      }
+  
+      if (!password) {
+        validationErrors.password = "Password is required.";
+      } else if (password.length < 6) {
+        validationErrors.password = "Password must be at least 6 characters.";
+      }
+  
+      setErrors(validationErrors);
+  
+      return Object.keys(errors).length === 0
+    }
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!formValidation()) return;
+  
+      try {
+        const response = await axiosInstance.post("/login", { email, password });
+        console.log("Form submitted:", response.data);
+        toast.success('logged in successfully');
+        // dispatch(setToken(response.data.token));
+        // dispatch(setUser(response.data.user))
+        navigate ('/admin', { replace: true });
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          toast.warning(error.response?.data?.message ||error.message)
+          console.error('Axios error:', error.response?.data || error.message);
         } else {
-            setErrors({});
-            // Handle successful login logic here
-            console.log("Form submitted", { email, password });
+          console.error('Unexpected error:', error)
+          // toast.error(.?)
         }
+      }
     };
 
     return (

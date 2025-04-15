@@ -2,6 +2,7 @@ import axios from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axiosInstance from '../../api/axiosInstance';
 
 type User = {
   name: string;
@@ -71,7 +72,7 @@ const navigate = useNavigate()
     if (!validateform()) return;
 
     try {
-      const response = await axios.post<User>('http://localhost:3000/signup', user);
+      const response = await axiosInstance.post<User>('signup', user);
       console.log('Signup successful:', response.data);
       toast.success('Signup successfully')
       navigate('/',{replace:true})

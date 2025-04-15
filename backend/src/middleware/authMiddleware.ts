@@ -9,7 +9,6 @@ export const tokenChecker = (req: Request, res: Response, next: NextFunction) =>
 
   try {
     const decoded = verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-    
     req.user = decoded;
 
     console.log("Authorized:", decoded);
