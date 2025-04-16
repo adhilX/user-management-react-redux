@@ -22,7 +22,7 @@ export const registerUser = async (req: Request, res: Response):Promise<void> =>
           const user = new User({ name, email, password: HashedPass });
           await user.save();
 
-          const token = generateToken({ id: user._id })
+          const token = generateToken({ id: user._id ,role : user})
           res.status(StatusCode.CREATED).json({
                message: "User registered successfully",
                user: {
@@ -62,7 +62,7 @@ export const loginUser = async (req: Request, res: Response):Promise<void>  => {
                return
           }
           const token = generateToken({ id: existUser._id })
-          res.status(StatusCode.OK).json({ message: 'User logged in successfully', token });
+          res.status(StatusCode.OK).json({ message: 'User logged in successfully', token, user:existUser });
 
      } catch (error) {
           if (error instanceof Error) {

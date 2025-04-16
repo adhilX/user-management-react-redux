@@ -3,12 +3,7 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axiosInstance from '../../api/axiosInstance';
-
-type User = {
-  name: string;
-  email: string;
-  password: string;
-};
+import User from '../../types/User';
 
 type ValidationError = {
   name?: string;
@@ -20,6 +15,7 @@ type ValidationError = {
 const Signup = () => {
   const [error, setError] = useState<ValidationError>({});
   const [user, setUser] = useState<User>({
+    _id: '',
     name: '',
     email: '',
     password: '',

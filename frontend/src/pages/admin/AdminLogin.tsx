@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-toastify";
-import { setToken, setUser } from "../../store/authSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { setAdminToken } from "../../store/adminTokenSlice";
 
 function AdminLogin() {
     const [email, setEmail] = useState("");
@@ -36,11 +36,10 @@ function AdminLogin() {
       if (!formValidation()) return;
   
       try {
-        const response = await axiosInstance.post("/login", { email, password });
+        const response = await axiosInstance.post("/admin/login", { email, password });
         console.log("Form submitted:", response.data);
         toast.success('logged in successfully');
-        // dispatch(setToken(response.data.token));
-        // dispatch(setUser(response.data.user))
+         dispatch(setAdminToken(response.data.token));
         navigate ('/admin', { replace: true });
       } catch (error) {
         if (axios.isAxiosError(error)) {

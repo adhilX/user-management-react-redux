@@ -1,42 +1,86 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import axiosInstance from "../../api/axiosInstance";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { setUser } from "../../store/authSlice";
 
 const UserProfile = () => {
-  const [user, setUser] = useState({
-    name: "Adhil Muhammed",
-    email: "adhil@example.com",
-    phone: "9876543210",
-    profilePic: "https://i.pravatar.cc/150?img=1",
-  });
+  const preUser = useSelector((state: RootState) => state.auth.user);
+  const [user, setUserData] = useState({ ...preUser });
+  const Navigate = useNavigate()
+  const dispatch = useDispatch()
+  // console.log(user);
+
+  const [disable , setDisable]= useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
+    setUserData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setUser((prev) => ({ ...prev, profilePic: imageUrl }));
-      // If you want to upload to server, use FormData and send the file here
+      try {
+        setDisable(true)
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("cloud_name", "dnkdja8nb");
+        formData.append("upload_preset", "USM --redux");
+
+        const url = "https://api.cloudinary.com/v1_1/dtbxcjgyg/image/upload";
+        const response = await axios.post(url, formData);
+         
+        const imageUrl = response.data.secure_url;
+        console.log('fddddddddddddddddddd',imageUrl)
+        setUserData((prev) => ({ ...prev, profilePic: imageUrl }));
+        console.log(user)
+        setDisable(false)
+        // toast.success("Profile picture updated successfully!");
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Failed to upload profile picture.");
+      }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Updated user:", user);
-    alert("Profile updated successfully!");
+    try {
+      console.log('sdklfjsnkdjg')
+      const response = await axiosInstance.put("/updateprofile", { ...user });
+      console.log('response',response);
+      toast.success('Profile updated ')
+      dispatch(setUser(response.data.updatedUser))
+      Navigate('/',{replace:true})
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.warning(error.response?.data?.message || error.message);
+        console.error("Axios error:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("Error");
+      }
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">User Profile</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          User Profile
+        </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Profile Image Upload */}
           <div className="flex flex-col items-center">
             <img
-              src={user.profilePic}
+              src={
+                user.profilePic ||
+                "https://t3.ftcdn.net/jpg/07/95/95/14/360_F_795951406_h17eywwIo36DU2L8jXtsUcEXqPeScBUq.jpg"
+              }
               alt="Profile"
               className="w-24 h-24 rounded-full object-cover mb-3"
             />
@@ -51,7 +95,9 @@ const UserProfile = () => {
 
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Name
+            </label>
             <input
               type="text"
               name="name"
@@ -65,7 +111,9 @@ const UserProfile = () => {
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -79,9 +127,11 @@ const UserProfile = () => {
 
           {/* Phone */}
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Phone</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Phone
+            </label>
             <input
-              type="tel"
+              type="text"
               name="phone"
               value={user.phone}
               onChange={handleChange}
@@ -95,8 +145,9 @@ const UserProfile = () => {
           <button
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl transition"
+            disabled={disable}
           >
-            Save Changes
+           {disable? 'Uploading....': 'Save Changes'}
           </button>
         </form>
       </div>

@@ -2,6 +2,7 @@ import User from "../../models/UserSchema"
 import StatusCode from "../../config/statusCode"
 import { compare } from "bcrypt"
 import { Request, Response } from "express"
+import { generateToken } from "../../utils/jwt"
 
 
 export const loginAdmin = async (req: Request, res: Response): Promise<void> => {
@@ -18,11 +19,13 @@ export const loginAdmin = async (req: Request, res: Response): Promise<void> => 
       res.status(StatusCode.UNAUTHORIZED).json({ message: 'Incorrect password' });
       return;
     }
+              const token = generateToken({ id: admin._id })
+    
         res.status(StatusCode.OK).json({message:'Login successful',admin:{
             id: admin._id,
             name:admin.name,
             email:admin.email
-        }})
+        },token})
     } catch (error: any) {
         console.error(error.message);
         res.status(500).json({ message: 'Server error' });

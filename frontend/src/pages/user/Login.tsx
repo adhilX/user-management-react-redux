@@ -39,7 +39,11 @@ function Login() {
       const response = await axiosInstance.post("/login", { email, password });
       console.log("Form submitted:", response.data);
       toast.success('User logged in successfully');
+
+      // localStorage.setItem("userToken", response.data.token);
+
       dispatch(setToken(response.data.token));
+      console.log(response.data)
       dispatch(setUser(response.data.user))
       navigate ('/', { replace: true });
     } catch (error) {
@@ -48,7 +52,7 @@ function Login() {
         console.error('Axios error:', error.response?.data || error.message);
       } else {
         console.error('Unexpected error:', error)
-        // toast.error(.?)
+        toast.error('Error')
       }
     }
   };

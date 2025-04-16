@@ -9,13 +9,16 @@ import AdminLogin from './pages/admin/AdminLogin';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import UserProfile from './pages/user/UserProfile';
+import ProtectedRoute from './components/Protected';
 
 
 function App() {
 
   const router = createBrowserRouter([
     {path : '/',
-      element: <UserHome/>
+      element: <ProtectedRoute>
+        <UserHome/>
+      </ProtectedRoute>
     },
     {path: '/login',
       element: <Login/>
@@ -24,10 +27,15 @@ function App() {
       element: <Signup/>
     },{
       path: '/userprofile',
-      element: <UserProfile/>
+      element: <ProtectedRoute >
+        <UserProfile/>
+      </ProtectedRoute>
     },{
       path:'/admin',
-      element: <AdminDashboard/>
+      element:<ProtectedRoute isAdmin={true}>
+        <AdminDashboard/>
+      </ProtectedRoute>
+
     },{
       path:'/admin/login',
       element:<AdminLogin/>
