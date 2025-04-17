@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axiosInstance from "../../api/axiosInstance";
+import axiosInstance from "../../api/AdminAxos";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +29,7 @@ function AdminLogin() {
   
       setErrors(validationErrors);
   
-      return Object.keys(errors).length === 0
+      return Object.keys(validationErrors).length === 0
     }
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -39,6 +39,7 @@ function AdminLogin() {
         const response = await axiosInstance.post("/admin/login", { email, password });
         console.log("Form submitted:", response.data);
         toast.success('logged in successfully');
+        console.log('tokennn',response.data.token)
          dispatch(setAdminToken(response.data.token));
         navigate ('/admin', { replace: true });
       } catch (error) {

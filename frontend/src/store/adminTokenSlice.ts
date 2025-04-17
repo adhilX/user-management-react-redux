@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-
-
 interface AdminTokenState {
     token:string | null
 }

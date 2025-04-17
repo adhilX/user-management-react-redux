@@ -103,7 +103,7 @@ const navigate = useNavigate()
           <div>
             <label className="block text-gray-600 text-sm mb-1">Email</label>
             <input
-              type="email"
+              type="text"
               name="email"
               onChange={handleChange}
               placeholder="you@example.com"

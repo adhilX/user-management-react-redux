@@ -12,24 +12,24 @@ function Login() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate  = useNavigate()
   const dispatch = useDispatch()
+  
   const formValidation =():boolean=>{
     const validationErrors: { email?: string; password?: string } = {};
-
-    if (!email) {
+    // if(!email.trim()  || !password.trim()) return false;
+    if (!email.trim()) {
       validationErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       validationErrors.email = "Email is invalid.";
     }
 
-    if (!password) {
+    if (!password.trim()) {
       validationErrors.password = "Password is required.";
     } else if (password.length < 6) {
       validationErrors.password = "Password must be at least 6 characters.";
     }
 
     setErrors(validationErrors);
-
-    return Object.keys(errors).length === 0
+    return Object.keys(validationErrors).length === 0
   }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +68,6 @@ function Login() {
             </label>
             <input
               id="email"
-              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={`w-full px-4 py-2 border ${

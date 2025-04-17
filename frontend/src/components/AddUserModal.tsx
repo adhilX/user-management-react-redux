@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify';
-import axiosInstance from '../api/axiosInstance';
+import axiosInstance from '../api/AdminAxos';
 import User from '../types/User';
-
+import {motion} from 'framer-motion'
 interface AddUserModalProps {
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setUserFn: React.Dispatch<React.SetStateAction<User>>;
+    setUserFn: React.Dispatch<React.SetStateAction<User[]>>; // ✅ Array of users
   }
-  const AddUserModal = ({  setModalOpen , setUserFn}: AddUserModalProps) => {
+  const AddUserModal: React.FC<AddUserModalProps> = ({ setModalOpen, setUserFn }) => {
     const [newUserData, setNewUserData] = useState({
   name: "",
   email: "",
@@ -37,8 +37,11 @@ interface AddUserModalProps {
       };
       
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm">
+    <div className="fixed inset-0 bg-black/25 flex items-center justify-center z-50 backdrop-blur-sm">
+    <motion.div 
+        initial= {{opacity:0,y:-80}}
+        animate={{opacity:1,y:0}}
+        className="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm">
       <h2 className="text-xl font-semibold mb-4">Add New User</h2>
       <form className="space-y-4">
         <div>
@@ -76,22 +79,26 @@ interface AddUserModalProps {
         </div>
       </form>
       <div className="flex justify-end mt-6 space-x-2">
-        <button
-          type="button"
+        <motion.button
+   whileHover={{ scale: 1.06 }}
+   whileTap={{ scale: 0.8 }}
+             type="button"
           onClick={() => setModalOpen(false)}
           className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
         >
           Cancel
-        </button>
-        <button
-          type="button"
+        </motion.button>
+        <motion.button
+   whileHover={{ scale: 1.06 }}
+   whileTap={{ scale: 0.8 }}
+             type="button"
           onClick={handleAddUserSubmit}
           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
         >
           Add User
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   </div>  )
 }
 

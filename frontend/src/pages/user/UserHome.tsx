@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 import { logout } from "../../store/authSlice";
-
+import {motion} from 'framer-motion'
 const UserHome = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -32,10 +32,13 @@ const UserHome = () => {
   className="w-8 h-8 rounded-full object-cover"
 />
           <span>Profile</span>
-            <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+            <motion.button
+ whileHover={{ scale: 1.2 }}
+ whileTap={{ scale: 0.8 }}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                   onClick={()=>dispatch(logout())}>
                     Logout
-                  </button>
+                  </motion.button>
         </button>
       </div>
 

@@ -71,7 +71,7 @@ const UserProfile = () => {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          User Profile
+         Edit User Profile
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Profile Image Upload */}
@@ -115,7 +115,7 @@ const UserProfile = () => {
               Email
             </label>
             <input
-              type="email"
+              type="text"
               name="email"
               value={user.email}
               onChange={handleChange}
@@ -137,7 +137,7 @@ const UserProfile = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter your phone number"
-              required
+              
             />
           </div>
 

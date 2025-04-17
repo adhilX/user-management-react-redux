@@ -3,7 +3,7 @@ import User from "../../models/UserSchema";
 import StatusCode from "../../config/statusCode";
 import { hashPassword } from "../../utils/passwordHash";
 import { compare } from "bcrypt";
-import { generateToken } from "../../utils/jwt";
+import { accessToken  } from "../../utils/jwt";
 
 export const registerUser = async (req: Request, res: Response):Promise<void> => {
 
@@ -22,15 +22,13 @@ export const registerUser = async (req: Request, res: Response):Promise<void> =>
           const user = new User({ name, email, password: HashedPass });
           await user.save();
 
-          const token = generateToken({ id: user._id ,role : user})
           res.status(StatusCode.CREATED).json({
                message: "User registered successfully",
                user: {
-                    id: user._id,
+                    _id: user._id,
                     name: user.name,
                     email: user.email,
-               },
-               token,
+               }
           })
           return
      } catch (error) {
@@ -61,7 +59,7 @@ export const loginUser = async (req: Request, res: Response):Promise<void>  => {
                res.status(StatusCode.UNAUTHORIZED).json({ message: 'Password does not match' });
                return
           }
-          const token = generateToken({ id: existUser._id })
+          const token = accessToken ({ id: existUser._id })
           res.status(StatusCode.OK).json({ message: 'User logged in successfully', token, user:existUser });
 
      } catch (error) {

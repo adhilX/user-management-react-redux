@@ -6,8 +6,8 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = store.getState().auth.token;
-  // console.log('axoissssssssssss',token)
+  const token = store.getState().adminToken.token;
+//   console.log('axoissssssssssss',token)
   if (token) {
     config.headers['x-access-token'] = token;
   }
