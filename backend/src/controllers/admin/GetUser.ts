@@ -5,7 +5,7 @@ import StatusCode from "../../config/statusCode";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
      try {
-          const Users = await User.find()
+            const Users = await User.find({ isAdmin: { $ne: true } })
 
           res.status(StatusCode.OK).json({message: 'success',Users})
      } catch (error) {

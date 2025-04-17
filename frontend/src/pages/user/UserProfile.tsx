@@ -6,15 +6,21 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../../store/authSlice";
+import { UserFormData } from "../../types/ValidationErrors";
+import User from "../../types/User";
 
 const UserProfile = () => {
   const preUser = useSelector((state: RootState) => state.auth.user);
-  const [user, setUserData] = useState({ ...preUser });
+  const [user, setUserData] = useState<User>({ ...preUser! });
   const Navigate = useNavigate()
   const dispatch = useDispatch()
   // console.log(user);
-
-  const [disable , setDisable]= useState(false)
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
+  const [disable, setDisable] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -33,11 +39,11 @@ const UserProfile = () => {
 
         const url = "https://api.cloudinary.com/v1_1/dtbxcjgyg/image/upload";
         const response = await axios.post(url, formData);
-         
+
         const imageUrl = response.data.secure_url;
-        console.log('fddddddddddddddddddd',imageUrl)
+        console.log('fddddddddddddddddddd', imageUrl)
         setUserData((prev) => ({ ...prev, profilePic: imageUrl }));
-        console.log(user)
+        // console.log(user)
         setDisable(false)
         // toast.success("Profile picture updated successfully!");
       } catch (error) {
@@ -46,16 +52,45 @@ const UserProfile = () => {
       }
     }
   };
+  const validateForm = (formData: UserFormData): { isValid: boolean; errors: UserFormData } => {
+    const errors: UserFormData = { name: '', email: '', phone: '' };
+    let isValid = true;
+
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+      isValid = false;
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Enter a valid email';
+      isValid = false;
+    }
+
+    if (!formData.phone.trim()) {
+      errors
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      errors.phone = 'Phone must be 10 digits';
+      isValid = false;
+    }
+
+    return { isValid, errors };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { isValid, errors } = validateForm({ ...user, phone: user.phone || '' });
+    setErrors(errors);
+    if (!isValid) return;
     try {
       console.log('sdklfjsnkdjg')
       const response = await axiosInstance.put("/updateprofile", { ...user });
-      console.log('response',response);
+      console.log('response', response);
       toast.success('Profile updated ')
       dispatch(setUser(response.data.updatedUser))
-      Navigate('/',{replace:true})
+      Navigate('/', { replace: true })
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.warning(error.response?.data?.message || error.message);
@@ -71,7 +106,7 @@ const UserProfile = () => {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-         Edit User Profile
+          Edit User Profile
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Profile Image Upload */}
@@ -91,6 +126,7 @@ const UserProfile = () => {
               className="text-sm text-gray-500"
               placeholder="Upload your profile picture"
             />
+
           </div>
 
           {/* Name */}
@@ -105,8 +141,8 @@ const UserProfile = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter your name"
-              required
             />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
           </div>
 
           {/* Email */}
@@ -121,8 +157,10 @@ const UserProfile = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter your email"
-              required
+
             />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+
           </div>
 
           {/* Phone */}
@@ -137,8 +175,10 @@ const UserProfile = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter your phone number"
-              
+
             />
+            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+
           </div>
 
           {/* Submit */}
@@ -147,7 +187,7 @@ const UserProfile = () => {
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl transition"
             disabled={disable}
           >
-           {disable? 'Uploading....': 'Save Changes'}
+            {disable ? 'Uploading....' : 'Save Changes'}
           </button>
         </form>
       </div>

@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useState } from 'react';
 import {motion} from 'framer-motion'
+import { UserFormData } from '../types/ValidationErrors';
 
 interface EditUserModalProps {
   setFormData: React.Dispatch<React.SetStateAction<any>>;
@@ -18,6 +19,12 @@ interface EditUserModalProps {
 
 
 function EditUserModal({ setFormData, formData, setModalOpen, setUsers }: EditUserModalProps) {
+  
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
   
     const [disable , setDisable]= useState(false)
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,11 +64,40 @@ function EditUserModal({ setFormData, formData, setModalOpen, setUsers }: EditUs
         }
       };
     
+      const validateForm = (formData:UserFormData): { isValid: boolean; errors: UserFormData } => {
+        const errors: UserFormData = { name: '', email: '', phone: '' };
+        let isValid = true;
+      
+        if (!formData.name.trim()) {
+          errors.name = 'Name is required';
+          isValid = false;
+        }
+      
+        if (!formData.email.trim()) {
+          errors.email = 'Email is required';
+          isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+          errors.email = 'Enter a valid email';
+          isValid = false;
+        }
+      
+        if (!formData.phone.trim()) {
+          errors
+        } else if (!/^\d{10}$/.test(formData.phone)) {
+          errors.phone = 'Phone must be 10 digits';
+          isValid = false;
+        }
+      
+        return { isValid, errors };
+      };
      
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { isValid, errors } = validateForm(formData);
+    setErrors(errors);
+    if (!isValid) return;
     try {
-      console.log('sdklfjsnkdjg')
+      // console.log('formmmmmmm',formData)
       const response = await axiosInstance.put("/updateprofile", { ...formData });
       console.log('response',response);
       toast.success('Profile updated ')
@@ -115,6 +151,8 @@ function EditUserModal({ setFormData, formData, setModalOpen, setUsers }: EditUs
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+
         </div>
         <div>
           <label className="block mb-1 text-gray-700">Email</label>
@@ -126,6 +164,8 @@ function EditUserModal({ setFormData, formData, setModalOpen, setUsers }: EditUs
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+
         </div>
         <div>
           <label className="block mb-1 text-gray-700">Phone</label>
@@ -137,6 +177,8 @@ function EditUserModal({ setFormData, formData, setModalOpen, setUsers }: EditUs
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
+          {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+
         </div>
       </form>
       <div className="flex justify-end mt-6 space-x-2">
