@@ -40,6 +40,7 @@ function AdminLogin() {
         console.log("Form submitted:", response.data);
         toast.success('logged in successfully');
         console.log('tokennn',response.data.token)
+        // localStorage.setItem('adminToken',response.data.token)
          dispatch(setAdminToken(response.data.token));
         navigate ('/admin', { replace: true });
       } catch (error) {

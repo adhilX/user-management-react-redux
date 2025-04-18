@@ -7,9 +7,9 @@ import UserHome from './pages/user/UserHome';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import { Provider } from 'react-redux';
-import store from './store/store';
 import UserProfile from './pages/user/UserProfile';
 import ProtectedRoute from './components/Protected';
+import { store } from './store/store';
 
 
 function App() {

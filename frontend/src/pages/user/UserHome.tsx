@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 import { logout } from "../../store/authSlice";
 import {motion} from 'framer-motion'
+
 const UserHome = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -10,19 +11,14 @@ const UserHome = () => {
 
   const user = useSelector((state:RootState)=>state.auth.user)
 
-  console.log(user)
-  // Dummy user data
-  // const user = {
-  //   name: "Adhil Muhammed",
-  //   profilePic: "https://i.pravatar.cc/150?img=1",
-  // };
 
+  console.log(user)
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-white p-6">
       {/* Navbar */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-800">User Dashboard</h1>
-        <button
+        <div
           onClick={() => navigate("/userprofile")}
           className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition"
         >
@@ -33,13 +29,13 @@ const UserHome = () => {
 />
           <span>Profile</span>
             <motion.button
- whileHover={{ scale: 1.2 }}
- whileTap={{ scale: 0.8 }}
+        whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
             className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                   onClick={()=>dispatch(logout())}>
                     Logout
                   </motion.button>
-        </button>
+        </div>
       </div>
 
       {/* Welcome Section */}
