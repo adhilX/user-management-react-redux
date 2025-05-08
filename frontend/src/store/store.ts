@@ -1,7 +1,7 @@
-// store.ts
+
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // localStorage
+import storage from "redux-persist/lib/storage"; 
 import authReducer from "./authSlice";
 import adminTokenReducer from "./adminTokenSlice";
 
@@ -31,3 +31,4 @@ export const persistor = persistStore(store);
 // types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+

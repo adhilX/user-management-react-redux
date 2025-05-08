@@ -7,9 +7,10 @@ import UserHome from './pages/user/UserHome';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import { Provider } from 'react-redux';
-import UserProfile from './pages/user/UserProfile';
 import ProtectedRoute from './components/Protected';
 import { store } from './store/store';
+import { lazy, Suspense } from 'react';
+const UserProfile = lazy(()=> import ('./pages/user/UserProfile'));
 
 
 function App() {
@@ -28,7 +29,9 @@ function App() {
     },{
       path: '/userprofile',
       element: <ProtectedRoute >
+        <Suspense fallback={<div className='grid place-items-center h-dvh text-2xl'><p>Loading.....</p></div>}>
         <UserProfile/>
+        </Suspense>
       </ProtectedRoute>
     },{
       path:'/admin',

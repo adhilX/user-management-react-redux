@@ -10,6 +10,7 @@ export interface IUser extends Document {
   profilePic?:string
 }
 
+  
 // Define the schema
 const userSchema = new Schema<IUser>(
   {
